@@ -57,7 +57,7 @@ repositories {
 ```groovy
 dependencies {
     ...
-    implementation 'com.github.Neopin:NeopinConnect-AOS:1.0.0'
+    implementation 'com.github.Neopin:NeopinConnect-AOS:1.0.1'
 }
 
 ```
