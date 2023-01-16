@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class WCEthereumTransaction(
+    val chainId: String? = "1001",
     val from: String,
     val to: String?,
     val nonce: String?,
@@ -17,6 +18,7 @@ data class WCEthereumTransaction(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString()!!,
         parcel.readString(),
         parcel.readString(),
@@ -31,6 +33,7 @@ data class WCEthereumTransaction(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(chainId)
         parcel.writeString(from)
         parcel.writeString(to)
         parcel.writeString(nonce)

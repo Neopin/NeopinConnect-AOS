@@ -126,7 +126,7 @@ open class WCClient(
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         resetState()
         onFailure(t)
-
+        Timber.e("<< websocket failure: $response >>")
         listeners.forEach { it.onFailure(webSocket, t, response) }
     }
 

@@ -12,7 +12,7 @@ data class WCSession(
     val bridge: String,
     val key: String = generateRandomKey()
 ) {
-    fun toUri(): String = "${scheme}:${topic}@${version}?bridge=${bridge}&key=${key}"
+    fun toUri(scheme: String = "nptwc"): String = "${scheme}:${topic}@${version}?bridge=${bridge}&key=${key}"
 
     companion object {
         fun from(from: String): WCSession? {

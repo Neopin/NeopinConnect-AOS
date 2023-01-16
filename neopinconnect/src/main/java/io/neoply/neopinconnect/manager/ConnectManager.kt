@@ -119,6 +119,15 @@ object ConnectManager {
         }
     }
 
+    fun personalSign(message: String): Boolean {
+        val client = getInstance()?.client
+        return if (client?.session == null) {
+            false
+        } else {
+            client.customMethodList(WCMethod.ETH_PERSONAL_SIGN, listOf(message, getInstance()?.userAddress ?: ""))
+        }
+    }
+
     fun signTransaction(transaction: WCEthereumTransaction): Boolean {
         val client = getInstance()?.client
         val result = if (client?.session == null) {

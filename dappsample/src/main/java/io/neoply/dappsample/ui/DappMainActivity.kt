@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import io.neoply.dappsample.R
 import io.neoply.dappsample.databinding.ActivityDappMainBinding
+import io.neoply.neopinconnect.extension.encodeHex
 import io.neoply.neopinconnect.manager.ConnectManager
 import io.neoply.neopinconnect.model.WCPeerMeta
 import io.neoply.neopinconnect.model.ethereum.WCEthereumTransaction
@@ -138,7 +139,45 @@ class DappMainActivity : AppCompatActivity() {
                     viewTextMessage("Bridge Server is Not Connected!")
                 }
             }
-            btnSendTransaction.setOnClickListener {
+            btnPersonalSign.setOnClickListener {
+                val elapsedRealtime = SystemClock.elapsedRealtime()
+                if ((elapsedRealtime - lastClickTime) < 1000) {
+                    return@setOnClickListener
+                }
+                lastClickTime = elapsedRealtime
+
+                if (ConnectManager.isSocketConnect()) {
+                    ConnectManager.personalSign("test".encodeHex())
+                } else {
+                    viewTextMessage("Bridge Server is Not Connected!")
+                }
+            }
+            btnSignTransaction.setOnClickListener {
+                val elapsedRealtime = SystemClock.elapsedRealtime()
+                if ((elapsedRealtime - lastClickTime) < 1000) {
+                    return@setOnClickListener
+                }
+                lastClickTime = elapsedRealtime
+
+                if (ConnectManager.isSocketConnect()) {
+                    val instance = ConnectManager.getInstance()
+                    ConnectManager.signTransaction(
+                        WCEthereumTransaction(
+                            chainId = "1001",
+                            from = instance?.userAddress ?: "0x0",
+                            to = "0x0", // Contract Address
+                            nonce = "0x0",
+                            gasPrice = "0x9184e72a000",
+                            gas = "0x76c0",
+                            value = "0x0",
+                            data = "0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                        )
+                    )
+                } else {
+                    viewTextMessage("Bridge Server is Not Connected!")
+                }
+            }
+            btnSendTransaction1.setOnClickListener {
                 val elapsedRealtime = SystemClock.elapsedRealtime()
                 if ((elapsedRealtime - lastClickTime) < 1000) {
                     return@setOnClickListener
@@ -149,6 +188,33 @@ class DappMainActivity : AppCompatActivity() {
                     val instance = ConnectManager.getInstance()
                     ConnectManager.sendTransaction(
                         WCEthereumTransaction(
+                            chainId = "1001",
+                            from = instance?.userAddress ?: "0x0",
+                            to = "0x0", // Contract Address
+                            nonce = "0x1",
+                            gasPrice = "0x9184e72a000",
+                            gas = "0x76c0",
+                            value = "0x0",
+                            data = "0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                        )
+                    )
+                } else {
+                    viewTextMessage("Bridge Server is Not Connected!")
+                }
+            }
+
+            btnSendTransaction2.setOnClickListener {
+                val elapsedRealtime = SystemClock.elapsedRealtime()
+                if ((elapsedRealtime - lastClickTime) < 1000) {
+                    return@setOnClickListener
+                }
+                lastClickTime = elapsedRealtime
+
+                if (ConnectManager.isSocketConnect()) {
+                    val instance = ConnectManager.getInstance()
+                    ConnectManager.sendTransaction(
+                        WCEthereumTransaction(
+                            chainId = "80001",
                             from = instance?.userAddress ?: "0x0",
                             to = "0x0", // Contract Address
                             nonce = "0x1",
@@ -168,7 +234,8 @@ class DappMainActivity : AppCompatActivity() {
     private fun connect() {
         ConnectManager.setClient(
             wcSession = WCSession(
-                bridge = "https://bridge.walletconnect.org",
+//                bridge = "https://bridge.walletconnect.org",
+                bridge = "https://wc-bridge.neopin.io",
             ),
             peerMeta = WCPeerMeta(
                 appId = "e4ec094244",
@@ -178,6 +245,7 @@ class DappMainActivity : AppCompatActivity() {
                 icons = listOf("https://raw.githubusercontent.com/Neopin/NeopinConnect-AOS/main/dappsample/src/main/res/mipmap-xxxhdpi/ic_launcher.png"),
             )
         )
+        viewTextMessage("Bridge Server Url: ${ConnectManager.getInstance()?.session?.bridge}")
     }
 
     private fun isInstalled(name: String): Boolean = try {
